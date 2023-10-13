@@ -78,38 +78,51 @@ class MyApp extends StatelessWidget {
 void _bottomSheet(BuildContext context, Products data) {
   showModalBottomSheet(
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
       ),
       context: context,
       isScrollControlled: true,
       builder: (BuildContext bc) {
         return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 5.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: data.images.map((i) => Image.network(i)).toList(),
+                    children: data.images
+                        .map((i) => Container(
+                              width: 200, // Set your desired width
+                              height: 200, // Set your desired height
+                              child: Image.network(i),
+                            ))
+                        .toList(),
                   ),
                 ),
-                Text(data.title),
-                Text(data.description!),
-                Text("${data.price}"),
+                Row(children: [Text(data.title)]),
+                Row(children: [
+                  Flexible(
+                      child: Text(
+                          maxLines: 1, // Adjust the number of lines as needed
+                          overflow: TextOverflow.clip,
+                          data.description!))
+                ]),
+                Row(children: [Text("\$${data.price.toString()}")]),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.star),
+                          Icon(color: Colors.yellow, Icons.star),
                           Text(data.rating.toString())
                         ],
                       ),
                       Row(
                         children: [
-                          Text(data.discountPercentage.toString()),
-                          Icon(Icons.discount),
+                          Text(data.discountPercentage.toString() + "%"),
+                          Icon(color: Colors.blue, Icons.discount),
                         ],
                       )
                     ])
@@ -154,6 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   itemCount: data!.length,
                   itemBuilder: (context, index) {
                     return Card(
+                      elevation: 20,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       ),
@@ -181,7 +195,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ]),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                children: [Text(data[index].description!)],
+                                children: [
+                                  Flexible(
+                                      child: Text(
+                                          maxLines:
+                                              1, // Adjust the number of lines as needed
+                                          overflow: TextOverflow.clip,
+                                          data[index].description!))
+                                ],
                               )
                             ]))
                       ]),
